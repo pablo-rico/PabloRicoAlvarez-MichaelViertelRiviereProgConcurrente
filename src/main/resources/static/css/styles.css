@@ -1,0 +1,14 @@
+:root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; }
+body { margin: 0; padding: 1rem 1.25rem; background: #0b0f14; color: #e9eef5; }
+header { margin-bottom: 1rem; }
+h1 { margin: 0 0 .25rem; }
+.cards { display: grid; grid-template-columns: repeat(3, minmax(180px, 1fr)); gap: 1rem; margin: 1rem 0; }
+.card { background: #131a22; border: 1px solid #253041; border-radius: 12px; padding: 1rem; }
+.card h3 { margin: 0 0 .5rem; font-weight: 600; color: #9ec3ff; }
+.card div { font-size: 1.8rem; font-weight: 700; }
+section { margin: 1rem 0 2rem; }
+table { width: 100%; border-collapse: collapse; background: #111821; border: 1px solid #253041; }
+th, td { padding: .6rem .7rem; border-bottom: 1px solid #1d2633; }
+thead th { text-align: left; color: #9ec3ff; background: #0f1620; position: sticky; top: 0; }
+tr:nth-child(even) { background: #0f1520; }
+footer { opacity: .7; }
