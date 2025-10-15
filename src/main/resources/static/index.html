@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Stark Security – Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/css/styles.css" />
+    <!-- Chart.js para gráfica simple -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <!-- STOMP + SockJS -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+<body>
+<header>
+    <h1>Stark Security – Sede NYC</h1>
+    <p>Alertas y rendimiento en tiempo real</p>
+</header>
+
+<section class="cards">
+    <div class="card">
+        <h3>Total lecturas</h3>
+        <div id="totalReadings">0</div>
+    </div>
+    <div class="card">
+        <h3>Total alertas</h3>
+        <div id="totalAlerts">0</div>
+    </div>
+    <div class="card">
+        <h3>Eventos/seg</h3>
+        <div id="eps">0.00</div>
+    </div>
+</section>
+
+<section>
+    <h2>Rendimiento (EPS)</h2>
+    <canvas id="epsChart"></canvas>
+</section>
+
+<section>
+    <h2>Alertas recientes</h2>
+    <table id="alertsTable">
+        <thead>
+        <tr><th>Hora</th><th>Severidad</th><th>Sensor</th><th>Mensaje</th></tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</section>
+
+<footer>
+    <small>Demo sin base de datos – Spring Boot + WebSocket</small>
+</footer>
+
+<script src="/js/dashboard.js"></script>
+</body>
+</html>
