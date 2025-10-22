@@ -7,4 +7,5 @@ public record SensorReading(
             SensorType type,
             double value,
             long timestamp // epoch millis; opcional (si 0, lo setea el backend)
+
     ) {}
