@@ -11,10 +11,13 @@ import org.starkIndustries.securitySystem.model.enums.Severity;
 public class ProcessingService {
     private final AlertService alerts;
     private final InMemoryState state;
+    private final SimulatorService simulator;
 
     public ProcessingService(AlertService alerts, InMemoryState state) {
         this.alerts = alerts;
         this.state = state;
+        this.simulator = new SimulatorService(state);
+        this.simulator.simulate();
     }
 
     // Procesamiento concurrente por tipo

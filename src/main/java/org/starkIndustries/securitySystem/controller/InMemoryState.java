@@ -12,7 +12,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Component
 public class InMemoryState {
-    // Métricas y buffers (sin base de datos)
     final AtomicLong totalReadings = new AtomicLong();
     final AtomicLong totalAlerts = new AtomicLong();
     final Queue<AlertDTO> lastAlerts = new ConcurrentLinkedQueue<>();

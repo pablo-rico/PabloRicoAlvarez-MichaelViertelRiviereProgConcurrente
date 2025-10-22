@@ -1,3 +1,16 @@
 package org.starkIndustries.securitySystem.model.enums;
 
-public enum Severity { INFO, WARN, CRITICAL }
+import java.util.concurrent.ThreadLocalRandom;
+
+public enum Severity {
+    INFO,
+    WARN,
+    CRITICAL;
+
+
+    public static Severity random() {
+        Severity[] values = values();
+        int index = ThreadLocalRandom.current().nextInt(values.length);
+        return values[index];
+    }
+}
