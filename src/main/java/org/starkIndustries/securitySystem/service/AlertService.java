@@ -4,26 +4,24 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.starkIndustries.securitySystem.controller.InMemoryState;
 import org.starkIndustries.securitySystem.model.dto.AlertDTO;
-import org.starkIndustries.securitySystem.model.enums.Severity;
-
-import java.time.Instant;
 
 @Service
 public class AlertService {
-    private final InMemoryState state;
-    private final SimpMessagingTemplate ws;
 
-    public AlertService(InMemoryState state, SimpMessagingTemplate ws) {
+    private final InMemoryState state;
+    private final SimpMessagingTemplate messagingTemplate;
+
+    public AlertService(InMemoryState state, SimpMessagingTemplate messagingTemplate) {
         this.state = state;
-        this.ws = ws;
+        this.messagingTemplate = messagingTemplate;
     }
 
-    public void raise(Severity sev, String msg, String sensorId) {
-        AlertDTO alert = new AlertDTO(
-                "A-" + Instant.now().toEpochMilli(),
-                sev, msg, sensorId, System.currentTimeMillis());
-        state.registerAlert(alert);
-        // Empuja a los clientes en tiempo real
-        ws.convertAndSend("/topic/alerts", alert);
+    // Agrega la alerta al estado global y la publica por websocket
+    public void raiseAlert(AlertDTO alert) {
+        state.addAlert(alert);
+
+        // Enviamos la alerta individual al topico de stomp
+        // El front escucha en /topic/alerts
+        messagingTemplate.convertAndSend("/topic/alerts", alert);
     }
 }

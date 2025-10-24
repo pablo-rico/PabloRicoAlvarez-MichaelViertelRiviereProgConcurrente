@@ -1,60 +1,54 @@
 package org.starkIndustries.securitySystem.service;
 
-import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.starkIndustries.securitySystem.controller.InMemoryState;
+import org.starkIndustries.securitySystem.model.dto.AlertDTO;
 import org.starkIndustries.securitySystem.model.dto.SensorReading;
 import org.starkIndustries.securitySystem.model.enums.Severity;
+import org.starkIndustries.securitySystem.model.enums.SensorType;
 
 @Service
 public class ProcessingService {
-    private final AlertService alerts;
+
     private final InMemoryState state;
-    private final SimulatorService simulator;
+    private final AlertService alertService;
 
-    public ProcessingService(AlertService alerts, InMemoryState state) {
-        this.alerts = alerts;
+    public ProcessingService(InMemoryState state, AlertService alertService) {
         this.state = state;
-        this.simulator = new SimulatorService(state);
-        this.simulator.simulate();
+        this.alertService = alertService;
     }
 
-    // Procesamiento concurrente por tipo
-    @Async
-    public void process(SensorReading r) {
-        switch (r.type()) {
-            case MOTION -> handleMotion(r);
-            case TEMPERATURE -> handleTemperature(r);
-            case ACCESS -> handleAccess(r);
+    // Procesa una lectura de sensor
+    // Actualiza contadores de rendimiento
+    // Dispara alerta si corresponde
+    public void processReading(SensorReading reading) {
+        // registramos que hubo una lectura
+        state.addReadingTimestamp(reading.getTimestamp());
+
+        // logica de ejemplo
+        // aca podrias tener checks por tipo de sensor y valor
+        boolean isCritical = false;
+        String msg = "Alert simulated";
+
+        if (reading.getSensorType() == SensorType.TEMPERATURE && reading.getValue() > 80) {
+            isCritical = true;
+            msg = "High temperature";
+        } else if (reading.getSensorType() == SensorType.ACCESS && reading.getValue() == 1) {
+            isCritical = true;
+            msg = "Unauthorized access";
+        } else if (reading.getSensorType() == SensorType.MOTION && reading.getValue() > 0.5) {
+            isCritical = true;
+            msg = "Motion detected";
         }
-    }
 
-    private void handleMotion(SensorReading r) {
-        // value > 0 implica movimiento detectado
-        if (r.value() > 0.5) {
-            alerts.raise(Severity.CRITICAL, "Intrusión detectada", r.sensorId());
+        if (isCritical) {
+            AlertDTO alert = new AlertDTO(
+                    System.currentTimeMillis(),
+                    Severity.CRITICAL,
+                    reading.getSensorType(),
+                    msg
+            );
+            alertService.raiseAlert(alert);
         }
-    }
-
-    private void handleTemperature(SensorReading r) {
-        // Umbrales demo
-        if (r.value() >= 60.0) {
-            alerts.raise(Severity.CRITICAL, "Sobrecalentamiento (" + r.value() + "ºC)", r.sensorId());
-        } else if (r.value() >= 45.0) {
-            alerts.raise(Severity.WARN, "Temperatura elevada (" + r.value() + "ºC)", r.sensorId());
-        }
-    }
-
-    private void handleAccess(SensorReading r) {
-        // value: 1 = acceso autorizado; 0 = denegado (solo demo)
-        if (r.value() < 0.5) {
-            alerts.raise(Severity.WARN, "Acceso denegado", r.sensorId());
-        }
-    }
-
-    @EventListener
-    public void onReadingAccepted(SensorReading accepted) {
-        // Hook si quisieras hacer correlación centralizada
     }
 }
